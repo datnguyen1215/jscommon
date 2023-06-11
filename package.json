@@ -4,7 +4,8 @@
   "author": "Dat Nguyen",
   "description": "A simple library for common javascript functions",
   "scripts": {
-    "test": "mocha --require @babel/register ./src/**/*.test.js"
+    "test": "mocha --require @babel/register",
+    "test:all": "mocha --require @babel/register \"src/**/*.test.js\""
   },
   "license": "ISC",
   "dependencies": {
