@@ -1,0 +1,24 @@
+{
+  "name": "jscommon",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "./src/index.mjs",
+  "imports": {
+    "#src/*": "./src/*"
+  },
+  "devDependencies": {
+    "mocha": "^10.2.0"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "uuid": "^9.0.0",
+    "ws": "^8.13.0",
+    "xstate": "^4.37.2"
+  }
+}
