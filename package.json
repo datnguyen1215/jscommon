@@ -1,24 +1,22 @@
 {
   "name": "jscommon",
   "version": "1.0.0",
-  "description": "",
-  "type": "module",
-  "main": "./src/index.mjs",
-  "imports": {
-    "#src/*": "./src/*"
-  },
-  "devDependencies": {
-    "mocha": "^10.2.0"
-  },
+  "author": "Dat Nguyen",
+  "description": "A simple library for common javascript functions",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha --require @babel/register ./src/**/*.test.js"
   },
-  "keywords": [],
-  "author": "",
   "license": "ISC",
   "dependencies": {
     "uuid": "^9.0.0",
     "ws": "^8.13.0",
     "xstate": "^4.37.2"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.22.5",
+    "@babel/core": "^7.22.5",
+    "@babel/preset-env": "^7.22.5",
+    "@babel/register": "^7.22.5",
+    "mocha": "^10.2.0"
   }
 }
