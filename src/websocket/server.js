@@ -5,7 +5,7 @@
  */
 import { EventEmitter } from '../events';
 import { WebSocketServer } from 'ws';
-import Connection from './connection';
+import { Connection, ConnectionEvents } from './connection';
 
 export default class Server extends EventEmitter {
   /**
@@ -36,7 +36,7 @@ export default class Server extends EventEmitter {
       const socket = new Connection(ws);
 
       // Listen to disconnection
-      socket.once('close', () => {
+      socket.once(ConnectionEvents.CLOSE, () => {
         this.clients = this.clients.filter(client => client !== socket);
       });
 
