@@ -4,6 +4,7 @@ import { nodeResolve } from '@rollup/plugin-node-resolve';
 
 export default {
   input: {
+    wrtiable: 'src/writable.js',
     events: 'src/events.js',
     utils: 'src/utils.js',
     hsm: 'src/hsm/index.js',
