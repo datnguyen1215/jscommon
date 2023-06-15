@@ -11,7 +11,7 @@
 import EventEmitter from '../events';
 import MessageTypes from './constants/message-types';
 import { v4 as uuid } from 'uuid';
-import * as PayloadTypes from './constants/payloads';
+import * as PayloadTypes from './constants/payloads/';
 import DisconnectReason from './constants/disconnect-reason';
 
 class WebSocketError extends Error {
@@ -94,7 +94,7 @@ class Connection extends EventEmitter {
 
     switch (payload.type) {
       case PayloadTypes.GENERAL.PING:
-        res({ type: PayloadTypes.PONG });
+        res({ type: PayloadTypes.GENERAL.PONG });
         this.emit('ping', this);
         break;
 
