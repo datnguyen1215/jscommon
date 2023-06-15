@@ -16,6 +16,7 @@ require('events');
 require('https');
 require('http');
 require('url');
+require('./_commonjsHelpers-ed042b00.js');
 
 const index = {
   events: events.EventEmitter,

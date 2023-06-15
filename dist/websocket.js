@@ -13,10 +13,7 @@ var require$$0$3 = require('events');
 var require$$1 = require('https');
 var require$$2 = require('http');
 var require$$7 = require('url');
-
-function getDefaultExportFromCjs (x) {
-	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
-}
+var _commonjsHelpers = require('./_commonjsHelpers-ed042b00.js');
 
 var bufferUtil$1 = {exports: {}};
 
@@ -3664,7 +3661,7 @@ function abortHandshakeOrEmitwsClientError(server, req, socket, code, message) {
     abortHandshake(socket, code, message);
   }
 }
-var WebSocketServer$1 = /*@__PURE__*/getDefaultExportFromCjs(websocketServer);
+var WebSocketServer$1 = /*@__PURE__*/_commonjsHelpers.getDefaultExportFromCjs(websocketServer);
 
 const MessageTypes = {
   REQUEST: 'REQUEST',
