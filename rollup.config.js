@@ -4,7 +4,7 @@ import { nodeResolve } from '@rollup/plugin-node-resolve';
 
 export default {
   input: {
-    wrtiable: 'src/writable.js',
+    writable: 'src/writable.js',
     events: 'src/events.js',
     utils: 'src/utils.js',
     hsm: 'src/hsm/index.js',
@@ -27,6 +27,7 @@ export default {
     babel({
       babelrc: false,
       babelHelpers: 'bundled',
+      compact: true,
       plugins: [['@babel/plugin-proposal-class-properties']]
     })
   ]
