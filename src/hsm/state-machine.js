@@ -1,10 +1,10 @@
-import { createMachine, interpret, MachineConfig, MachineSchema } from 'xstate';
+import { createMachine, interpret } from 'xstate';
 import { EventEmitter } from 'events';
 
 class StateMachine extends EventEmitter {
   /**
-   * @param {MachineConfig} config
-   * @param {MachineSchema} options
+   * @param {import('xstate').MachineConfig} config
+   * @param {import('xstate').MachineSchema} options
    */
   constructor(config, options) {
     super();
