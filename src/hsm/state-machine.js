@@ -1,5 +1,5 @@
 import { createMachine, interpret } from 'xstate';
-import { EventEmitter } from 'events';
+import { EventEmitter } from '../events';
 
 class StateMachine extends EventEmitter {
   /**
