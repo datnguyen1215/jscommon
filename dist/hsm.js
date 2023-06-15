@@ -2,7 +2,6 @@
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-var _rollupPluginBabelHelpers = require('./_rollupPluginBabelHelpers-673cd81f.js');
 var require$$0 = require('events');
 
 /*! *****************************************************************************
@@ -4458,84 +4457,71 @@ function createMachine(config, options) {
   return new StateNode(config, options);
 }
 
-var StateMachine = /*#__PURE__*/function (_EventEmitter) {
-  _rollupPluginBabelHelpers._inherits(StateMachine, _EventEmitter);
-  var _super = _rollupPluginBabelHelpers._createSuper(StateMachine);
+class StateMachine extends require$$0.EventEmitter {
   /**
    * @param {import('xstate').MachineConfig} config
    * @param {import('xstate').MachineSchema} options
    */
-  function StateMachine(config, options) {
-    var _this;
-    _rollupPluginBabelHelpers._classCallCheck(this, StateMachine);
-    _this = _super.call(this);
-    _this.machine = createMachine(_rollupPluginBabelHelpers._objectSpread2({
+  constructor(config, options) {
+    super();
+    this.machine = createMachine({
       preserveActionOrder: true,
-      predictableActionArguments: false
-    }, config), options);
-    _this.state = _this.machine.initialState;
+      predictableActionArguments: false,
+      ...config
+    }, options);
+    this.state = this.machine.initialState;
 
     /** @private */
-    _this.service = interpret(_this.machine, {
+    this.service = interpret(this.machine, {
       execute: false
     });
-    _this.service.onTransition(function (next) {
-      _this.emit('transition', next, _this.state);
-      _this.state = next;
-      _this.service.execute(_this.state);
+    this.service.onTransition(next => {
+      this.emit('transition', next, this.state);
+      this.state = next;
+      this.service.execute(this.state);
     });
-    return _this;
   }
 
   /**
    * Start state machine.
    */
-  _rollupPluginBabelHelpers._createClass(StateMachine, [{
-    key: "start",
-    value: function start() {
-      this.service.start();
-    }
+  start() {
+    this.service.start();
+  }
 
-    /**
-     * Stop and dispose state machine.
-     */
-  }, {
-    key: "stop",
-    value: function stop() {
-      this.service.stop();
-    }
+  /**
+   * Stop and dispose state machine.
+   */
+  stop() {
+    this.service.stop();
+  }
 
-    /**
-     * @param {*} evt
-     * @param {*} data
-     */
-  }, {
-    key: "trigger",
-    value: function trigger(evt) {
-      var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-      this.service.send(evt, {
-        data: data
-      });
-    }
-  }]);
-  return StateMachine;
-}(require$$0.EventEmitter);
+  /**
+   * @param {*} evt
+   * @param {*} data
+   */
+  trigger(evt, data = {}) {
+    this.service.send(evt, {
+      data
+    });
+  }
+}
 
-var assign = function assign(context) {
-  return function (ctx, evt) {
-    Object.keys(context).forEach(function (key) {
-      var action = context[key];
+const assign = context => {
+  return (ctx, evt) => {
+    Object.keys(context).forEach(key => {
+      const action = context[key];
       if (typeof action === 'function') return ctx[key] = action(ctx, evt);
       ctx[key] = context[key];
     });
   };
 };
 
-var hsm = {
-  StateMachine: StateMachine,
-  assign: assign
+const index = {
+  StateMachine,
+  assign
 };
 
 exports.StateMachine = StateMachine;
 exports.assign = assign;
-exports.default = hsm;
+exports.default = index;

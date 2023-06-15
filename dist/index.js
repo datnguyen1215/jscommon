@@ -6,7 +6,6 @@ var events = require('./events.js');
 var utils = require('./utils.js');
 var hsm = require('./hsm.js');
 var websocket = require('./websocket.js');
-require('./_rollupPluginBabelHelpers-673cd81f.js');
 require('events');
 require('stream');
 require('zlib');
@@ -18,7 +17,7 @@ require('https');
 require('http');
 require('url');
 
-var index = {
+const index = {
   events: events.EventEmitter,
   utils: utils.default,
   hsm: hsm.default,

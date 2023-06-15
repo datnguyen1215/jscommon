@@ -2,7 +2,6 @@
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-var _rollupPluginBabelHelpers = require('./_rollupPluginBabelHelpers-673cd81f.js');
 var events = require('./events.js');
 var require$$0$2 = require('stream');
 var require$$0 = require('zlib');
@@ -2608,7 +2607,7 @@ Object.defineProperty(WebSocket$1.prototype, 'CLOSED', {
 });
 WebSocket$1.prototype.addEventListener = addEventListener;
 WebSocket$1.prototype.removeEventListener = removeEventListener;
-var websocket$1 = WebSocket$1;
+var websocket = WebSocket$1;
 
 /**
  * Initialize a WebSocket client.
@@ -3241,7 +3240,7 @@ const {
 const extension = extension$1;
 const PerMessageDeflate = permessageDeflate;
 const subprotocol = subprotocol$1;
-const WebSocket = websocket$1;
+const WebSocket = websocket;
 const {
   GUID,
   kWebSocket
@@ -3667,7 +3666,7 @@ function abortHandshakeOrEmitwsClientError(server, req, socket, code, message) {
 }
 var WebSocketServer$1 = /*@__PURE__*/getDefaultExportFromCjs(websocketServer);
 
-var MessageTypes = {
+const MessageTypes = {
   REQUEST: 'REQUEST',
   RESPONSE: 'RESPONSE',
   EVENT: 'EVENT'
@@ -3730,13 +3729,13 @@ function v4(options, buf, offset) {
   return unsafeStringify(rnds);
 }
 
-var general = {
+const General = {
   PING: 'PING',
   PONG: 'PONG',
   DISCONNECT: 'DISCONNECT'
 };
 
-var DisconnectReason = {
+const DisconnectReasons = {
   NORMAL: {
     reason: 'normal',
     code: 5001
@@ -3755,25 +3754,29 @@ var DisconnectReason = {
   }
 };
 
-var WebSocketError = /*#__PURE__*/function (_Error) {
-  _rollupPluginBabelHelpers._inherits(WebSocketError, _Error);
-  var _super = _rollupPluginBabelHelpers._createSuper(WebSocketError);
-  function WebSocketError(code, msg) {
-    var _this;
-    _rollupPluginBabelHelpers._classCallCheck(this, WebSocketError);
-    _this = _super.call(this, msg);
-    _this.code = code;
-    return _this;
+/**
+ * @typedef {Object} MessagePayload
+ * @property {string} type
+ * @property {Object} data
+ *
+ * @typedef {Object} WebSocketMessage
+ * @property {string} type
+ * @property {string} [id]
+ * @property {MessagePayload} payload
+ */
+class WebSocketError extends Error {
+  constructor(code, msg) {
+    super(msg);
+    this.code = code;
   }
-  return _rollupPluginBabelHelpers._createClass(WebSocketError);
-}( /*#__PURE__*/_rollupPluginBabelHelpers._wrapNativeSuper(Error));
-var ERRORS = {
+}
+const ERRORS = {
   NOT_CONNECTED: new WebSocketError(4000, 'Socket is not connected.'),
   INVALID_PAYLOAD: new WebSocketError(4001, 'Invalid payload.'),
   INVALID_RESPONSE: new WebSocketError(4002, 'Invalid response.'),
   REQUEST_TIMEOUT: new WebSocketError(4003, 'Request timeout.')
 };
-var ConnectionEvents = {
+const ConnectionEvents = {
   EVENT: 'event',
   REQUEST: 'request',
   RESPONSE: 'response',
@@ -3781,357 +3784,246 @@ var ConnectionEvents = {
   MESSAGE: 'message',
   CLOSE: 'close'
 };
-var Connection = /*#__PURE__*/function (_EventEmitter) {
-  _rollupPluginBabelHelpers._inherits(Connection, _EventEmitter);
-  var _super2 = _rollupPluginBabelHelpers._createSuper(Connection);
+class Connection extends events.EventEmitter {
   /**
    * @param {WebSocket} socket
    */
-  function Connection(socket) {
-    var _this2;
-    _rollupPluginBabelHelpers._classCallCheck(this, Connection);
-    _this2 = _super2.call(this);
+  constructor(socket) {
+    super();
 
     // throw error if socket is not connected
     if (socket.readyState !== 1) throw ERRORS.NOT_CONNECTED;
-    _this2.socket = socket;
-    _this2.socket.onclose = function () {
-      return _this2.emit('close', DisconnectReason.ABNORMAL, _rollupPluginBabelHelpers._assertThisInitialized(_this2));
-    };
-    _this2.socket.onmessage = function (msg) {
-      return _this2.onMessage(msg.data || msg);
-    };
-    return _this2;
+    this.socket = socket;
+    this.socket.onclose = () => this.emit('close', DisconnectReasons.ABNORMAL, this);
+    this.socket.onmessage = msg => this.onMessage(msg.data || msg);
   }
 
   /**
    * @private
    * @param {WebSocketMessage} msg
    */
-  _rollupPluginBabelHelpers._createClass(Connection, [{
-    key: "onMessage",
-    value: function onMessage(msg) {
-      msg = JSON.parse(msg);
-      switch (msg.type) {
-        case MessageTypes.EVENT:
-          this.emit(ConnectionEvents.EVENT, msg.payload, this);
-          break;
-        case MessageTypes.REQUEST:
-          this.onRequest(msg);
-          break;
-        case MessageTypes.RESPONSE:
-          this.emit(ConnectionEvents.RESPONSE, msg, this);
-          break;
-        default:
-          this.emit(ConnectionEvents.MESSAGE, msg, this);
-          break;
-      }
+  onMessage(msg) {
+    msg = JSON.parse(msg);
+    switch (msg.type) {
+      case MessageTypes.EVENT:
+        this.emit(ConnectionEvents.EVENT, msg.payload, this);
+        break;
+      case MessageTypes.REQUEST:
+        this.onRequest(msg);
+        break;
+      case MessageTypes.RESPONSE:
+        this.emit(ConnectionEvents.RESPONSE, msg, this);
+        break;
+      default:
+        this.emit(ConnectionEvents.MESSAGE, msg, this);
+        break;
     }
+  }
 
-    /**
-     * @private
-     * @param {WebSocketMessage} msg
-     */
-  }, {
-    key: "onRequest",
-    value: function onRequest(msg) {
-      var _this3 = this;
-      var payload = msg.payload;
-      var res = function res(payload) {
-        _this3.send(JSON.stringify({
-          type: MessageTypes.RESPONSE,
-          id: msg.id,
-          payload: payload
-        }));
-      };
-      switch (payload.type) {
-        case general.PING:
-          res({
-            type: general.PONG
-          });
-          this.emit('ping', this);
-          break;
-        case general.DISCONNECT:
-          // send a success response
-          res({
-            success: true
-          });
-
-          // close the socket
-          this.socket.onclose = function () {
-            _this3.dispose();
-            _this3.emit('close', DisconnectReason.REQUESTED, _this3);
-          };
-          this.socket.close();
-          break;
-        default:
-          this.emit('request', payload, res, this);
-          break;
-      }
-    }
-
-    /**
-     * Send a raw message to the other client.
-     * @param {string} msg
-     */
-  }, {
-    key: "send",
-    value: function send(msg) {
-      this.socket.send(msg);
-    }
-
-    /**
-     * Send a event to the other client.
-     * @param {MessagePayload} payload
-     */
-  }, {
-    key: "sendEvent",
-    value: function sendEvent(payload) {
+  /**
+   * @private
+   * @param {WebSocketMessage} msg
+   */
+  onRequest(msg) {
+    const {
+      payload
+    } = msg;
+    const res = payload => {
       this.send(JSON.stringify({
-        type: MessageTypes.EVENT,
-        payload: payload
+        type: MessageTypes.RESPONSE,
+        id: msg.id,
+        payload
       }));
-    }
+    };
+    switch (payload.type) {
+      case General.PING:
+        res({
+          type: General.PONG
+        });
+        this.emit('ping', this);
+        break;
+      case General.DISCONNECT:
+        // send a success response
+        res({
+          success: true
+        });
 
-    /**
-     * Send a request to the other client.
-     * @param {MessagePayload} payload
-     * @param {number} [timeout=30000]
-     */
-  }, {
-    key: "sendRequest",
-    value: function sendRequest(payload) {
-      var _this4 = this;
-      var timeout = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 30000;
-      return new Promise(function (resolve, reject) {
-        var id = v4();
-
-        // used to check if the request is timeout.
-        var timer = setTimeout(function () {
-          _this4.off('response', onResponse);
-          clearTimeout(timer);
-          return reject(ERRORS.REQUEST_TIMEOUT);
-        }, timeout);
-        var onResponse = function onResponse(msg) {
-          if (msg.id !== id && msg.type !== MessageTypes.RESPONSE) return;
-
-          // clear resources.
-          clearTimeout(timer);
-          _this4.off('response', onResponse);
-          resolve(msg.payload);
+        // close the socket
+        this.socket.onclose = () => {
+          this.dispose();
+          this.emit('close', DisconnectReasons.REQUESTED, this);
         };
-        _this4.on('response', onResponse);
-        _this4.send(JSON.stringify({
-          type: MessageTypes.REQUEST,
-          id: id,
-          payload: payload
-        }));
-      });
+        this.socket.close();
+        break;
+      default:
+        this.emit('request', payload, res, this);
+        break;
     }
+  }
 
-    /**
-     * Send a ping to the other client.
-     * @param {number} [timeout=3000]
-     * @returns {Promise<void>}
-     */
-  }, {
-    key: "ping",
-    value: function () {
-      var _ping = _rollupPluginBabelHelpers._asyncToGenerator( /*#__PURE__*/_rollupPluginBabelHelpers._regeneratorRuntime().mark(function _callee() {
-        var timeout,
-          _args = arguments;
-        return _rollupPluginBabelHelpers._regeneratorRuntime().wrap(function _callee$(_context) {
-          while (1) switch (_context.prev = _context.next) {
-            case 0:
-              timeout = _args.length > 0 && _args[0] !== undefined ? _args[0] : 3000;
-              _context.next = 3;
-              return this.sendRequest({
-                type: general.PING
-              }, timeout);
-            case 3:
-              return _context.abrupt("return", _context.sent);
-            case 4:
-            case "end":
-              return _context.stop();
-          }
-        }, _callee, this);
+  /**
+   * Send a raw message to the other client.
+   * @param {string} msg
+   */
+  send(msg) {
+    this.socket.send(msg);
+  }
+
+  /**
+   * Send a event to the other client.
+   * @param {MessagePayload} payload
+   */
+  sendEvent(payload) {
+    this.send(JSON.stringify({
+      type: MessageTypes.EVENT,
+      payload
+    }));
+  }
+
+  /**
+   * Send a request to the other client.
+   * @param {MessagePayload} payload
+   * @param {number} [timeout=30000]
+   */
+  sendRequest(payload, timeout = 30000) {
+    return new Promise((resolve, reject) => {
+      const id = v4();
+
+      // used to check if the request is timeout.
+      const timer = setTimeout(() => {
+        this.off('response', onResponse);
+        clearTimeout(timer);
+        return reject(ERRORS.REQUEST_TIMEOUT);
+      }, timeout);
+      const onResponse = msg => {
+        if (msg.id !== id && msg.type !== MessageTypes.RESPONSE) return;
+
+        // clear resources.
+        clearTimeout(timer);
+        this.off('response', onResponse);
+        resolve(msg.payload);
+      };
+      this.on('response', onResponse);
+      this.send(JSON.stringify({
+        type: MessageTypes.REQUEST,
+        id,
+        payload
       }));
-      function ping() {
-        return _ping.apply(this, arguments);
-      }
-      return ping;
-    }()
-    /**
-     * Disposing the connection.
-     */
-  }, {
-    key: "dispose",
-    value: function dispose() {
-      this.socket.onclose = null;
-      this.socket.onmessage = null;
-      this.socket = null;
-    }
+    });
+  }
 
-    /**
-     * Close the connection. Same as disconnect().
-     * @param {number} [timeout=3000]
-     * @returns {Promise<void>}
-     */
-  }, {
-    key: "close",
-    value: function () {
-      var _close = _rollupPluginBabelHelpers._asyncToGenerator( /*#__PURE__*/_rollupPluginBabelHelpers._regeneratorRuntime().mark(function _callee2() {
-        var timeout,
-          _args2 = arguments;
-        return _rollupPluginBabelHelpers._regeneratorRuntime().wrap(function _callee2$(_context2) {
-          while (1) switch (_context2.prev = _context2.next) {
-            case 0:
-              timeout = _args2.length > 0 && _args2[0] !== undefined ? _args2[0] : 3000;
-              _context2.next = 3;
-              return this.disconnect(timeout);
-            case 3:
-            case "end":
-              return _context2.stop();
-          }
-        }, _callee2, this);
-      }));
-      function close() {
-        return _close.apply(this, arguments);
-      }
-      return close;
-    }()
-    /**
-     * Send a disconnect request to the other client.
-     * @param {number} [timeout=3000]
-     * @returns {Promise<void>}
-     */
-  }, {
-    key: "disconnect",
-    value: function disconnect() {
-      var _this5 = this;
-      var timeout = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 3000;
-      return new Promise( /*#__PURE__*/function () {
-        var _ref = _rollupPluginBabelHelpers._asyncToGenerator( /*#__PURE__*/_rollupPluginBabelHelpers._regeneratorRuntime().mark(function _callee3(resolve) {
-          return _rollupPluginBabelHelpers._regeneratorRuntime().wrap(function _callee3$(_context3) {
-            while (1) switch (_context3.prev = _context3.next) {
-              case 0:
-                _context3.next = 2;
-                return _this5.sendRequest({
-                  type: general.DISCONNECT
-                }, timeout);
-              case 2:
-                _this5.socket.onclose = function () {
-                  _this5.dispose();
-                  resolve();
-                  _this5.emit('close', DisconnectReason.NORMAL, _this5);
-                };
-                _this5.socket.close();
-              case 4:
-              case "end":
-                return _context3.stop();
-            }
-          }, _callee3);
-        }));
-        return function (_x) {
-          return _ref.apply(this, arguments);
-        };
-      }());
-    }
-  }]);
-  return Connection;
-}(events.EventEmitter);
+  /**
+   * Send a ping to the other client.
+   * @param {number} [timeout=3000]
+   * @returns {Promise<void>}
+   */
+  async ping(timeout = 3000) {
+    return await this.sendRequest({
+      type: General.PING
+    }, timeout);
+  }
 
-var Server = /*#__PURE__*/function (_EventEmitter) {
-  _rollupPluginBabelHelpers._inherits(Server, _EventEmitter);
-  var _super = _rollupPluginBabelHelpers._createSuper(Server);
+  /**
+   * Disposing the connection.
+   */
+  dispose() {
+    this.socket.onclose = null;
+    this.socket.onmessage = null;
+    this.socket = null;
+  }
+
+  /**
+   * Close the connection. Same as disconnect().
+   * @param {number} [timeout=3000]
+   * @returns {Promise<void>}
+   */
+  async close(timeout = 3000) {
+    await this.disconnect(timeout);
+  }
+
+  /**
+   * Send a disconnect request to the other client.
+   * @param {number} [timeout=3000]
+   * @returns {Promise<void>}
+   */
+  disconnect(timeout = 3000) {
+    return new Promise(async resolve => {
+      // send to the other client to request a disconnection
+      await this.sendRequest({
+        type: General.DISCONNECT
+      }, timeout);
+      this.socket.onclose = () => {
+        this.dispose();
+        resolve();
+        this.emit('close', DisconnectReasons.NORMAL, this);
+      };
+      this.socket.close();
+    });
+  }
+}
+
+/**
+ * @typedef {Object} WebSocketServerConfig
+ * @property {http.Server} server
+ * @property {string} path
+ */
+class Server extends events.EventEmitter {
   /**
    * @param {WebSocketServerConfig} config
    */
-  function Server(config) {
-    var _this;
-    _rollupPluginBabelHelpers._classCallCheck(this, Server);
-    _this = _super.call(this);
-    _this.config = config;
+  constructor(config) {
+    super();
+    this.config = config;
 
     /** @type {ws.Server} */
-    _this.wss = null;
+    this.wss = null;
 
     /** @type {ws.WebSocket[]} */
-    _this.clients = [];
-    _this.disposers = [];
-    return _this;
+    this.clients = [];
+    this.disposers = [];
   }
 
   /**
    * Start listening to websocket connections.
    * @returns {Promise}
    */
-  _rollupPluginBabelHelpers._createClass(Server, [{
-    key: "listen",
-    value: function listen() {
-      var _this2 = this;
-      this.wss = new WebSocketServer$1(this.config);
-      var onConnection = function onConnection(ws) {
-        var socket = new Connection(ws);
+  listen() {
+    this.wss = new WebSocketServer$1(this.config);
+    const onConnection = ws => {
+      const socket = new Connection(ws);
 
-        // Listen to disconnection
-        socket.once(ConnectionEvents.CLOSE, function () {
-          _this2.clients = _this2.clients.filter(function (client) {
-            return client !== socket;
-          });
-        });
-        _this2.clients.push(socket);
-        _this2.emit('connection', socket);
-      };
-      this.wss.on('connection', onConnection);
-      this.disposers.push(function () {
-        _this2.wss.off('connection', onConnection);
+      // Listen to disconnection
+      socket.once(ConnectionEvents.CLOSE, () => {
+        this.clients = this.clients.filter(client => client !== socket);
       });
-    }
+      this.clients.push(socket);
+      this.emit('connection', socket);
+    };
+    this.wss.on('connection', onConnection);
+    this.disposers.push(() => {
+      this.wss.off('connection', onConnection);
+    });
+  }
 
-    /**
-     * Stop listening to websocket connections.
-     * @returns {Promise}
-     */
-  }, {
-    key: "dispose",
-    value: function () {
-      var _dispose = _rollupPluginBabelHelpers._asyncToGenerator( /*#__PURE__*/_rollupPluginBabelHelpers._regeneratorRuntime().mark(function _callee() {
-        return _rollupPluginBabelHelpers._regeneratorRuntime().wrap(function _callee$(_context) {
-          while (1) switch (_context.prev = _context.next) {
-            case 0:
-              _context.next = 2;
-              return this.wss.close();
-            case 2:
-              this.disposers.forEach(function (dispose) {
-                return dispose();
-              });
-              this.clients.forEach(function (client) {
-                return client.close();
-              });
-              this.clients = [];
-            case 5:
-            case "end":
-              return _context.stop();
-          }
-        }, _callee, this);
-      }));
-      function dispose() {
-        return _dispose.apply(this, arguments);
-      }
-      return dispose;
-    }()
-  }]);
-  return Server;
-}(events.EventEmitter);
+  /**
+   * Stop listening to websocket connections.
+   * @returns {Promise}
+   */
+  async dispose() {
+    await this.wss.close();
+    this.disposers.forEach(dispose => dispose());
+    this.clients.forEach(client => client.close());
+    this.clients = [];
+  }
+}
 
-var websocket = {
+const index = {
   WebSocketServer: Server,
   WebSocketConnection: Connection,
-  ConnectionEvents: ConnectionEvents
+  ConnectionEvents
 };
 
 exports.ConnectionEvents = ConnectionEvents;
 exports.WebSocketConnection = Connection;
 exports.WebSocketServer = Server;
-exports.default = websocket;
+exports.default = index;
