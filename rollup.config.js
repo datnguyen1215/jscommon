@@ -23,6 +23,10 @@ export default {
   plugins: [
     nodeResolve(),
     commonjs(),
-    babel({ babelHelpers: 'bundled' })
+    babel({
+      babelrc: false,
+      babelHelpers: 'bundled',
+      plugins: [['@babel/plugin-proposal-class-properties']]
+    })
   ]
 };
