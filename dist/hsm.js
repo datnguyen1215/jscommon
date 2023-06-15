@@ -2,7 +2,7 @@
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-var require$$0 = require('events');
+var events = require('./events.js');
 
 /*! *****************************************************************************
 Copyright (c) Microsoft Corporation.
@@ -4457,7 +4457,7 @@ function createMachine(config, options) {
   return new StateNode(config, options);
 }
 
-class StateMachine extends require$$0.EventEmitter {
+class StateMachine extends events.EventEmitter {
   /**
    * @param {import('xstate').MachineConfig} config
    * @param {import('xstate').MachineSchema} options
