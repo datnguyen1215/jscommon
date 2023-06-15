@@ -18,12 +18,7 @@ require('http');
 require('url');
 require('./_commonjsHelpers-ed042b00.js');
 
-const index = {
-  events: events.EventEmitter,
-  utils: utils.default,
-  hsm: hsm.default,
-  websocket: websocket.default
-};
+const index={events: events.EventEmitter,utils: utils.default,hsm: hsm.default,websocket: websocket.default};
 
 exports.events = events.EventEmitter;
 exports.utils = utils.default;
