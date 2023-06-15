@@ -57,6 +57,4 @@ class EventEmitter {
   }
 }
 
-export { EventEmitter };
-
-export default EventEmitter;
+export { EventEmitter, EventEmitter as default };

@@ -52,4 +52,4 @@ class StateMachine extends EventEmitter {
   }
 }
 
-export default StateMachine;
+export { StateMachine as default };

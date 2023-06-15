@@ -216,5 +216,5 @@ class Connection extends EventEmitter {
   }
 }
 
-export { ConnectionEvents, Connection };
-export default { Connection, ConnectionEvents };
+const index = { ConnectionEvents, Connection };
+export { ConnectionEvents, Connection, Connection as default };

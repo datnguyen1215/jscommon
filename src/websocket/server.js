@@ -7,7 +7,7 @@ import { EventEmitter } from '../events';
 import { WebSocketServer } from 'ws';
 import { Connection, ConnectionEvents } from './connection';
 
-export default class Server extends EventEmitter {
+class Server extends EventEmitter {
   /**
    * @param {WebSocketServerConfig} config
    */
@@ -63,3 +63,5 @@ export default class Server extends EventEmitter {
     this.clients = [];
   }
 }
+
+export { Server as default };

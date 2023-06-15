@@ -1,2 +1,4 @@
 import GENERAL from './general';
-export { GENERAL };
+
+const index = { GENERAL };
+export { GENERAL, index as default };

@@ -4,5 +4,11 @@ import {
   ConnectionEvents
 } from './connection';
 
-export { WebSocketServer, WebSocketConnection, ConnectionEvents };
-export default { WebSocketServer, WebSocketConnection, ConnectionEvents };
+const index = { WebSocketServer, WebSocketConnection, ConnectionEvents };
+
+export {
+  WebSocketServer,
+  WebSocketConnection,
+  ConnectionEvents,
+  index as default
+};

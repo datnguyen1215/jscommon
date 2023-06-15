@@ -9,4 +9,4 @@ const assign = context => {
   };
 };
 
-export default assign;
+export { assign as default };
