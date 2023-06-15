@@ -4,8 +4,14 @@
   "author": "Dat Nguyen",
   "description": "A simple library for common javascript functions",
   "scripts": {
+    "build": "npm run clean && rollup -c --bundleConfigAsCjs",
+    "clean": "rm -rf dist/",
     "test": "mocha --require @babel/register",
     "test:all": "mocha --require @babel/register \"src/**/*.test.js\""
+  },
+  "exports": {
+    ".": "./dist/index.js",
+    "./*": "./dist/*.js"
   },
   "license": "ISC",
   "dependencies": {
@@ -18,6 +24,11 @@
     "@babel/core": "^7.22.5",
     "@babel/preset-env": "^7.22.5",
     "@babel/register": "^7.22.5",
-    "mocha": "^10.2.0"
+    "@rollup/plugin-babel": "^6.0.3",
+    "@rollup/plugin-commonjs": "^25.0.1",
+    "@rollup/plugin-node-resolve": "^15.1.0",
+    "mocha": "^10.2.0",
+    "rollup": "^3.25.1",
+    "rollup-plugin-copy": "^3.4.0"
   }
 }
