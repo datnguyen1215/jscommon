@@ -22,7 +22,7 @@ class EventEmitter{constructor(){this.events={};}/**
    */once(type,listener){const onceListener=(...args)=>{listener(...args);this.off(type,onceListener);};this.on(type,onceListener);}/**
    * Remove all listeners for an event.
    * @param {string} type
-   */removeAllListeners(type){if(!this.events[type])return;this.events[type]=[];}}const create=()=>{const events=new EventEmitter();return {on:events.on,emit:events.emit,off:events.off,once:events.once,removeAllListeners:events.removeAllListeners};};const index={create,EventEmitter};
+   */removeAllListeners(type){if(!this.events[type])return;this.events[type]=[];}}const create=()=>{const events=new EventEmitter();return {on:events.on.bind(events),emit:events.emit.bind(events),off:events.off.bind(events),once:events.once.bind(events),removeAllListeners:events.removeAllListeners.bind(events)};};const index={create,EventEmitter};
 
 exports.EventEmitter = EventEmitter;
 exports.create = create;
