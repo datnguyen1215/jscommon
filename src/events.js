@@ -60,11 +60,11 @@ class EventEmitter {
 const create = () => {
   const events = new EventEmitter();
   return {
-    on: events.on,
-    emit: events.emit,
-    off: events.off,
-    once: events.once,
-    removeAllListeners: events.removeAllListeners
+    on: events.on.bind(events),
+    emit: events.emit.bind(events),
+    off: events.off.bind(events),
+    once: events.once.bind(events),
+    removeAllListeners: events.removeAllListeners.bind(events)
   };
 };
 

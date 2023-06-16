@@ -1,11 +1,11 @@
-import { EventEmitter } from 'events';
-import events from 'events';
-
+import { EventEmitter } from './events';
+import events from './events';
 import assert from 'assert';
 
 describe('events', () => {
   it('should work with import default and named import', done => {
-    assert(events === EventEmitter);
+    assert(events.create);
+    assert(events.EventEmitter === EventEmitter);
     done();
   });
 
@@ -68,5 +68,11 @@ describe('events', () => {
 
     assert(count === 0);
     done();
+  });
+
+  it('create() should create a new instance', done => {
+    const emitter = events.create();
+    emitter.once('event', () => done());
+    emitter.emit('event');
   });
 });
