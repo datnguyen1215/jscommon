@@ -1,7 +1,8 @@
 /**
  * @typedef {Object} WebSocketServerConfig
- * @property {http.Server} server
+ * @property {number|string} port
  * @property {string} path
+ * @property {http.Server} server
  */
 import { EventEmitter } from '../events';
 import { WebSocketServer } from 'ws';

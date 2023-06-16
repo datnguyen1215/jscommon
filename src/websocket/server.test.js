@@ -58,4 +58,19 @@ describe('websocket/server.js', () => {
       ws.close();
     };
   });
+
+  it('should create websocket server without http', done => {
+    const server = new WebSocketServer({ port: PORT });
+    server.on('connection', socket => {
+      socket.close();
+      server.dispose();
+      done();
+    });
+    server.listen();
+
+    const ws = new WebSocket(`ws://localhost:${PORT}`);
+    ws.onopen = () => {
+      ws.close();
+    };
+  });
 });
