@@ -57,4 +57,16 @@ class EventEmitter {
   }
 }
 
-export { EventEmitter, EventEmitter as default };
+const create = () => {
+  const events = new EventEmitter();
+  return {
+    on: events.on,
+    emit: events.emit,
+    off: events.off,
+    once: events.once,
+    removeAllListeners: events.removeAllListeners
+  };
+};
+
+const index = { create, EventEmitter };
+export { create, EventEmitter, index as default };

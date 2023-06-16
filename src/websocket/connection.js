@@ -8,7 +8,7 @@
  * @property {string} [id]
  * @property {MessagePayload} payload
  */
-import EventEmitter from '../events';
+import { EventEmitter } from '../events';
 import MessageTypes from './constants/message-types';
 import { v4 as uuid } from 'uuid';
 import * as PayloadTypes from './constants/payloads/';
