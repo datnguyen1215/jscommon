@@ -8,7 +8,7 @@ var require$$0 = require('zlib');
 var require$$0$1 = require('buffer');
 var require$$3 = require('net');
 var require$$4 = require('tls');
-var require$$5 = require('crypto');
+var crypto = require('crypto');
 var require$$0$3 = require('events');
 var require$$1 = require('https');
 var require$$2 = require('http');
@@ -350,7 +350,7 @@ this._messageLength=this._totalPayloadLength;this._fragments.push(data);}return 
  * @private
  */function error(ErrorCtor,message,prefix,statusCode,errorCode){const err=new ErrorCtor(prefix?`Invalid WebSocket frame: ${message}`:message);Error.captureStackTrace(err,error);err.code=errorCode;err[kStatusCode$1]=statusCode;return err;}
 
-const{randomFillSync}=require$$5;const PerMessageDeflate$2=permessageDeflate;const{EMPTY_BUFFER: EMPTY_BUFFER$1}=constants;const{isValidStatusCode}=validationExports;const{mask:applyMask,toBuffer: toBuffer$1}=bufferUtilExports;const kByteLength=Symbol('kByteLength');const maskBuffer=Buffer.alloc(4);/**
+const{randomFillSync}=crypto;const PerMessageDeflate$2=permessageDeflate;const{EMPTY_BUFFER: EMPTY_BUFFER$1}=constants;const{isValidStatusCode}=validationExports;const{mask:applyMask,toBuffer: toBuffer$1}=bufferUtilExports;const kByteLength=Symbol('kByteLength');const maskBuffer=Buffer.alloc(4);/**
  * HyBi Sender implementation.
  */let Sender$1 = class Sender{/**
    * Creates a Sender instance.
@@ -576,7 +576,7 @@ if(isEscaping){if(tokenChars$1[code]!==1){throw new SyntaxError(`Unexpected char
  * @public
  */function format$1(extensions){return Object.keys(extensions).map(extension=>{let configurations=extensions[extension];if(!Array.isArray(configurations))configurations=[configurations];return configurations.map(params=>{return [extension].concat(Object.keys(params).map(k=>{let values=params[k];if(!Array.isArray(values))values=[values];return values.map(v=>v===true?k:`${k}=${v}`).join('; ');})).join('; ');}).join(', ');}).join(', ');}var extension$1={format: format$1,parse: parse$2};
 
-const EventEmitter$1=require$$0$3;const https=require$$1;const http$1=require$$2;const net=require$$3;const tls=require$$4;const{randomBytes,createHash: createHash$1}=require$$5;const{URL}=require$$7;const PerMessageDeflate$1=permessageDeflate;const Receiver=receiver;const Sender=sender;const{BINARY_TYPES,EMPTY_BUFFER,GUID: GUID$1,kForOnEventAttribute,kListener,kStatusCode,kWebSocket: kWebSocket$1,NOOP}=constants;const{EventTarget:{addEventListener,removeEventListener}}=eventTarget;const{format,parse: parse$1}=extension$1;const{toBuffer}=bufferUtilExports;const closeTimeout=30*1000;const kAborted=Symbol('kAborted');const protocolVersions=[8,13];const readyStates=['CONNECTING','OPEN','CLOSING','CLOSED'];const subprotocolRegex=/^[!#$%&'*+\-.0-9A-Z^_`|a-z~]+$/;/**
+const EventEmitter$1=require$$0$3;const https=require$$1;const http$1=require$$2;const net=require$$3;const tls=require$$4;const{randomBytes,createHash: createHash$1}=crypto;const{URL}=require$$7;const PerMessageDeflate$1=permessageDeflate;const Receiver=receiver;const Sender=sender;const{BINARY_TYPES,EMPTY_BUFFER,GUID: GUID$1,kForOnEventAttribute,kListener,kStatusCode,kWebSocket: kWebSocket$1,NOOP}=constants;const{EventTarget:{addEventListener,removeEventListener}}=eventTarget;const{format,parse: parse$1}=extension$1;const{toBuffer}=bufferUtilExports;const closeTimeout=30*1000;const kAborted=Symbol('kAborted');const protocolVersions=[8,13];const readyStates=['CONNECTING','OPEN','CLOSING','CLOSED'];const subprotocolRegex=/^[!#$%&'*+\-.0-9A-Z^_`|a-z~]+$/;/**
  * Class representing a WebSocket.
  *
  * @extends EventEmitter
@@ -903,7 +903,7 @@ const{tokenChars}=validationExports;/**
  * @public
  */function parse(header){const protocols=new Set();let start=-1;let end=-1;let i=0;for(i;i<header.length;i++){const code=header.charCodeAt(i);if(end===-1&&tokenChars[code]===1){if(start===-1)start=i;}else if(i!==0&&(code===0x20/* ' ' */||code===0x09)/* '\t' */){if(end===-1&&start!==-1)end=i;}else if(code===0x2c/* ',' */){if(start===-1){throw new SyntaxError(`Unexpected character at index ${i}`);}if(end===-1)end=i;const protocol=header.slice(start,end);if(protocols.has(protocol)){throw new SyntaxError(`The "${protocol}" subprotocol is duplicated`);}protocols.add(protocol);start=end=-1;}else {throw new SyntaxError(`Unexpected character at index ${i}`);}}if(start===-1||end!==-1){throw new SyntaxError('Unexpected end of input');}const protocol=header.slice(start,i);if(protocols.has(protocol)){throw new SyntaxError(`The "${protocol}" subprotocol is duplicated`);}protocols.add(protocol);return protocols;}var subprotocol$1={parse};
 
-const EventEmitter=require$$0$3;const http=require$$2;const{createHash}=require$$5;const extension=extension$1;const PerMessageDeflate=permessageDeflate;const subprotocol=subprotocol$1;const WebSocket=websocket;const{GUID,kWebSocket}=constants;const keyRegex=/^[+/0-9A-Za-z]{22}==$/;const RUNNING=0;const CLOSING=1;const CLOSED=2;/**
+const EventEmitter=require$$0$3;const http=require$$2;const{createHash}=crypto;const extension=extension$1;const PerMessageDeflate=permessageDeflate;const subprotocol=subprotocol$1;const WebSocket=websocket;const{GUID,kWebSocket}=constants;const keyRegex=/^[+/0-9A-Za-z]{22}==$/;const RUNNING=0;const CLOSING=1;const CLOSED=2;/**
  * Class representing a WebSocket server.
  *
  * @extends EventEmitter
@@ -1039,12 +1039,8 @@ message=message||http.STATUS_CODES[code];headers={Connection:'close','Content-Ty
 
 const MessageTypes={REQUEST:'REQUEST',RESPONSE:'RESPONSE',EVENT:'EVENT'};
 
-// Unique ID creation requires a high quality random # generator. In the browser we therefore
-// require the crypto API and do not support built-in fallback to lower quality random number
-// generators (like Math.random()).
-let getRandomValues;const rnds8=new Uint8Array(16);function rng(){// lazy load so that environments that need to polyfill have a chance to do so
-if(!getRandomValues){// getRandomValues needs to be invoked in a context where "this" is a Crypto implementation.
-getRandomValues=typeof crypto!=='undefined'&&crypto.getRandomValues&&crypto.getRandomValues.bind(crypto);if(!getRandomValues){throw new Error('crypto.getRandomValues() not supported. See https://github.com/uuidjs/uuid#getrandomvalues-not-supported');}}return getRandomValues(rnds8);}
+const rnds8Pool=new Uint8Array(256);// # of random values to pre-allocate
+let poolPtr=rnds8Pool.length;function rng(){if(poolPtr>rnds8Pool.length-16){crypto.randomFillSync(rnds8Pool);poolPtr=0;}return rnds8Pool.slice(poolPtr,poolPtr+=16);}
 
 /**
  * Convert array of 16 byte values to UUID string format of the form:
@@ -1053,7 +1049,7 @@ getRandomValues=typeof crypto!=='undefined'&&crypto.getRandomValues&&crypto.getR
 // and works in ways you may not expect. See https://github.com/uuidjs/uuid/pull/434
 return (byteToHex[arr[offset+0]]+byteToHex[arr[offset+1]]+byteToHex[arr[offset+2]]+byteToHex[arr[offset+3]]+'-'+byteToHex[arr[offset+4]]+byteToHex[arr[offset+5]]+'-'+byteToHex[arr[offset+6]]+byteToHex[arr[offset+7]]+'-'+byteToHex[arr[offset+8]]+byteToHex[arr[offset+9]]+'-'+byteToHex[arr[offset+10]]+byteToHex[arr[offset+11]]+byteToHex[arr[offset+12]]+byteToHex[arr[offset+13]]+byteToHex[arr[offset+14]]+byteToHex[arr[offset+15]]).toLowerCase();}
 
-const randomUUID=typeof crypto!=='undefined'&&crypto.randomUUID&&crypto.randomUUID.bind(crypto);var native = {randomUUID};
+var native = {randomUUID:crypto.randomUUID};
 
 function v4(options,buf,offset){if(native.randomUUID&&!buf&&!options){return native.randomUUID();}options=options||{};const rnds=options.random||(options.rng||rng)();// Per 4.4, set bits for version and `clock_seq_hi_and_reserved`
 rnds[6]=rnds[6]&0x0f|0x40;rnds[8]=rnds[8]&0x3f|0x80;// Copy bytes to buffer, if provided
@@ -1066,7 +1062,7 @@ const DisconnectReasons={NORMAL:{reason:'normal',code:5001},ABNORMAL:{reason:'ab
 class WebSocketError extends Error{constructor(code,msg){super(msg);this.code=code;}}const ERRORS={NOT_CONNECTED:new WebSocketError(4000,'Socket is not connected.'),INVALID_PAYLOAD:new WebSocketError(4001,'Invalid payload.'),INVALID_RESPONSE:new WebSocketError(4002,'Invalid response.'),REQUEST_TIMEOUT:new WebSocketError(4003,'Request timeout.')};const ConnectionEvents={EVENT:'event',REQUEST:'request',RESPONSE:'response',PING:'ping',MESSAGE:'message',CLOSE:'close'};class Connection extends events.EventEmitter{/**
    * @param {WebSocket} socket
    */constructor(socket){super();// throw error if socket is not connected
-if(socket.readyState!==1)throw ERRORS.NOT_CONNECTED;this.socket=socket;this.socket.onclose=()=>this.emit('close',DisconnectReasons.ABNORMAL,this);this.socket.onmessage=msg=>this.onMessage(msg.data||msg);}/**
+if(socket.readyState!==1)throw ERRORS.NOT_CONNECTED;this.socket=socket;this.socket.onclose=()=>this.emit('close',DisconnectReasons.ABNORMAL,this);this.socket.onmessage=msg=>this.onMessage(msg.data||msg);}get connected(){return this.socket.readyState===1;}/**
    * @private
    * @param {WebSocketMessage} msg
    */onMessage(msg){msg=JSON.parse(msg);switch(msg.type){case MessageTypes.EVENT:this.emit(ConnectionEvents.EVENT,msg.payload,this);break;case MessageTypes.REQUEST:this.onRequest(msg);break;case MessageTypes.RESPONSE:this.emit(ConnectionEvents.RESPONSE,msg,this);break;default:this.emit(ConnectionEvents.MESSAGE,msg,this);break;}}/**
@@ -1077,14 +1073,14 @@ res({success:true});// close the socket
 this.socket.onclose=()=>{this.dispose();this.emit('close',DisconnectReasons.REQUESTED,this);};this.socket.close();break;default:this.emit('request',payload,res,this);break;}}/**
    * Send a raw message to the other client.
    * @param {string} msg
-   */send(msg){this.socket.send(msg);}/**
+   */send(msg){if(!this.connected)throw ERRORS.NOT_CONNECTED;this.socket.send(msg);}/**
    * Send a event to the other client.
    * @param {MessagePayload} payload
    */sendEvent(payload){this.send(JSON.stringify({type:MessageTypes.EVENT,payload}));}/**
    * Send a request to the other client.
    * @param {MessagePayload} payload
    * @param {number} [timeout=30000]
-   */sendRequest(payload,timeout=30000){return new Promise((resolve,reject)=>{const id=v4();// used to check if the request is timeout.
+   */sendRequest(payload,timeout=30000){return new Promise((resolve,reject)=>{if(!this.connected)return reject(ERRORS.NOT_CONNECTED);const id=v4();// used to check if the request is timeout.
 const timer=setTimeout(()=>{this.off('response',onResponse);clearTimeout(timer);return reject(ERRORS.REQUEST_TIMEOUT);},timeout);const onResponse=msg=>{if(msg.id!==id&&msg.type!==MessageTypes.RESPONSE)return;// clear resources.
 clearTimeout(timer);this.off('response',onResponse);resolve(msg.payload);};this.on('response',onResponse);this.send(JSON.stringify({type:MessageTypes.REQUEST,id,payload}));});}/**
    * Send a ping to the other client.
@@ -1092,7 +1088,7 @@ clearTimeout(timer);this.off('response',onResponse);resolve(msg.payload);};this.
    * @returns {Promise<void>}
    */async ping(timeout=3000){return await this.sendRequest({type:General.PING},timeout);}/**
    * Disposing the connection.
-   */dispose(){this.socket.onclose=null;this.socket.onmessage=null;this.socket=null;}/**
+   */dispose(){if(!this.socket)return;this.socket.onclose=null;this.socket.onmessage=null;this.socket=null;}/**
    * Close the connection. Same as disconnect().
    * @param {number} [timeout=3000]
    * @returns {Promise<void>}
@@ -1100,7 +1096,7 @@ clearTimeout(timer);this.off('response',onResponse);resolve(msg.payload);};this.
    * Send a disconnect request to the other client.
    * @param {number} [timeout=3000]
    * @returns {Promise<void>}
-   */disconnect(timeout=3000){return new Promise(async resolve=>{// send to the other client to request a disconnection
+   */disconnect(timeout=3000){return new Promise(async resolve=>{if(!this.connected){this.dispose();return resolve();}// send to the other client to request a disconnection
 await this.sendRequest({type:General.DISCONNECT},timeout);this.socket.onclose=()=>{this.dispose();resolve();this.emit('close',DisconnectReasons.NORMAL,this);};this.socket.close();});}}
 
 class Server extends events.EventEmitter{/**
