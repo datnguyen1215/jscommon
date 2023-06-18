@@ -53,6 +53,10 @@ class Connection extends EventEmitter {
     this.socket.onmessage = msg => this.onMessage(msg.data || msg);
   }
 
+  get connected() {
+    return this.socket.readyState === 1;
+  }
+
   /**
    * @private
    * @param {WebSocketMessage} msg
@@ -122,6 +126,8 @@ class Connection extends EventEmitter {
    * @param {string} msg
    */
   send(msg) {
+    if (!this.connected) throw ERRORS.NOT_CONNECTED;
+
     this.socket.send(msg);
   }
 
@@ -140,6 +146,8 @@ class Connection extends EventEmitter {
    */
   sendRequest(payload, timeout = 30000) {
     return new Promise((resolve, reject) => {
+      if (!this.connected) return reject(ERRORS.NOT_CONNECTED);
+
       const id = uuid();
 
       // used to check if the request is timeout.
@@ -178,6 +186,8 @@ class Connection extends EventEmitter {
    * Disposing the connection.
    */
   dispose() {
+    if (!this.socket) return;
+
     this.socket.onclose = null;
     this.socket.onmessage = null;
     this.socket = null;
@@ -199,6 +209,11 @@ class Connection extends EventEmitter {
    */
   disconnect(timeout = 3000) {
     return new Promise(async resolve => {
+      if (!this.connected) {
+        this.dispose();
+        return resolve();
+      }
+
       // send to the other client to request a disconnection
       await this.sendRequest(
         { type: PayloadTypes.GENERAL.DISCONNECT },
