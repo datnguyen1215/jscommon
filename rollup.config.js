@@ -9,6 +9,7 @@ export default {
     utils: 'src/utils.js',
     hsm: 'src/hsm/index.js',
     websocket: 'src/websocket/index.js',
+    logger: 'src/logger/index.js',
     index: 'src/index.js'
   },
 

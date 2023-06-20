@@ -9,12 +9,16 @@
     "test": "mocha --require @babel/register",
     "test:all": "mocha --require @babel/register \"src/**/*.test.js\""
   },
+  "imports": {
+    "#dist/*": "./dist/*.js"
+  },
   "exports": {
     ".": "./dist/index.js",
     "./*": "./dist/*.js"
   },
   "license": "ISC",
   "dependencies": {
+    "date-format": "^4.0.14",
     "lodash": "^4.17.21",
     "uuid": "^9.0.0",
     "ws": "^8.13.0",
