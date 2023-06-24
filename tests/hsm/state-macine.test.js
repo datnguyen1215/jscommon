@@ -1,4 +1,4 @@
-import StateMachine from './state-machine';
+import StateMachine from '#src/hsm/state-machine';
 import assert from 'assert';
 
 describe('hsm/state-machine.js', () => {

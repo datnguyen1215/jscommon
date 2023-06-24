@@ -1,5 +1,5 @@
-import assign from './assign';
-import StateMachine from './state-machine';
+import assign from '#src/hsm/assign';
+import StateMachine from '#src/hsm/state-machine';
 import assert from 'assert';
 
 describe('hsm/assign.js', () => {

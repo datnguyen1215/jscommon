@@ -1,5 +1,5 @@
-import { EventEmitter } from './events';
-import events from './events';
+import { EventEmitter } from '#src/events';
+import events from '#src/events';
 import assert from 'assert';
 
 describe('events', () => {

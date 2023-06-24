@@ -1,10 +1,10 @@
 import { WebSocket } from 'ws';
 import http from 'http';
-import WebSocketServer from './server';
+import WebSocketServer from '#src/websocket/server';
 import {
   Connection as WebSocketConnection,
   ConnectionEvents
-} from './connection';
+} from '#src/websocket/connection';
 import assert from 'assert';
 
 const PORT = 8837;

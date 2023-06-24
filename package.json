@@ -7,7 +7,10 @@
     "build": "npm run clean && rollup -c --bundleConfigAsCjs",
     "clean": "rm -rf dist/",
     "test": "mocha --require @babel/register",
-    "test:all": "mocha --require @babel/register \"src/**/*.test.js\""
+    "test:all": "mocha --require @babel/register \"tests/**/*.test.js\""
+  },
+  "imports": {
+    "#src/*": "./src/*.js"
   },
   "exports": {
     ".": "./dist/index.js",

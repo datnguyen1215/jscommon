@@ -1,4 +1,4 @@
-import writable from './writable';
+import writable from '#src/writable';
 import assert from 'assert';
 
 describe('writable', () => {
