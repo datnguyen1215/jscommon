@@ -86,6 +86,8 @@ class Server extends EventEmitter {
     await this.wss.close();
     this.disposers.forEach(dispose => dispose());
     this.clients.forEach(client => client.close());
+    this.wss = null;
+    this.disposers = [];
     this.clients = [];
   }
 }
