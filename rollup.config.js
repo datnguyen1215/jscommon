@@ -27,7 +27,6 @@ export default {
     babel({
       babelrc: false,
       babelHelpers: 'bundled',
-      compact: true,
       plugins: [['@babel/plugin-proposal-class-properties']]
     })
   ]
