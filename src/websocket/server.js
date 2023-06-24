@@ -25,13 +25,30 @@ class Server extends EventEmitter {
     this.wss = null;
 
     /**
-     * @type {ws.WebSocket[]}
+     * @type {Connection}
      * @private
      **/
     this.clients = [];
 
     /** @private */
     this.disposers = [];
+  }
+
+  /**
+   * Broadcast a message to all connected clients.
+   * @param {any} msg
+   */
+  broadcastEvent(msg) {
+    this.clients.forEach(client => client.sendEvent(msg));
+  }
+
+  /**
+   * Broadcast a request to all connected clients.
+   * @param {any} msg
+   * @returns {Promise}
+   */
+  broadcastRequest(msg) {
+    return Promise.all(this.clients.map(client => client.sendRequest(msg)));
   }
 
   /**
