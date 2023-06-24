@@ -9470,15 +9470,44 @@ if(freeModule){// Export for Node.js.
 freeExports._=_;}else {// Export to the global object.
 root._=_;}}).call(_commonjsHelpers.commonjsGlobal);})(lodash$1,lodash$1.exports);var lodashExports=lodash$1.exports;var lodash = /*@__PURE__*/_commonjsHelpers.getDefaultExportFromCjs(lodashExports);
 
-class Writable{constructor(value){/** @private */this.value=value;/** @private */this.listeners=[];}set(value){const old=this.value;this.value=value;// Notify all the listeners of new changes.
-this.listeners.forEach(listener=>listener(value,old));}/**
+class Writable {
+  constructor(value) {
+    /** @private */
+    this.value = value;
+
+    /** @private */
+    this.listeners = [];
+  }
+  set(value) {
+    const old = this.value;
+    this.value = value;
+
+    // Notify all the listeners of new changes.
+    this.listeners.forEach(listener => listener(value, old));
+  }
+
+  /**
    * Update the value by merging.
    * @param {any} value
-   */update(value){const newVal=lodash.merge({},this.value,value);this.set(newVal);}/**
+   */
+  update(value) {
+    const newVal = lodash.merge({}, this.value, value);
+    this.set(newVal);
+  }
+
+  /**
    * Subscribe to changes.
    * @param {function} listener
    * @returns {function} destroy
-   */subscribe(listener){this.listeners.push(listener);// Make sure to call back immediately with the current value.
-listener(this.value);return ()=>this.listeners=this.listeners.filter(l=>l!==listener);}}const writable=value=>new Writable(value);
+   */
+  subscribe(listener) {
+    this.listeners.push(listener);
+
+    // Make sure to call back immediately with the current value.
+    listener(this.value);
+    return () => this.listeners = this.listeners.filter(l => l !== listener);
+  }
+}
+const writable = value => new Writable(value);
 
 exports.default = writable;
