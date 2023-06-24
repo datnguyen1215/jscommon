@@ -15,14 +15,22 @@ class Server extends EventEmitter {
   constructor(config) {
     super();
 
+    /** @private */
     this.config = config;
 
-    /** @type {ws.Server} */
+    /**
+     * @type {ws.Server}
+     * @private
+     **/
     this.wss = null;
 
-    /** @type {ws.WebSocket[]} */
+    /**
+     * @type {ws.WebSocket[]}
+     * @private
+     **/
     this.clients = [];
 
+    /** @private */
     this.disposers = [];
   }
 

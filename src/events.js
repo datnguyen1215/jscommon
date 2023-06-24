@@ -1,5 +1,6 @@
 class EventEmitter {
   constructor() {
+    /** @private */
     this.events = {};
   }
 

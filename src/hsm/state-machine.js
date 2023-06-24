@@ -9,6 +9,7 @@ class StateMachine extends EventEmitter {
   constructor(config, options) {
     super();
 
+    /** @private */
     this.machine = createMachine(
       {
         preserveActionOrder: true,
