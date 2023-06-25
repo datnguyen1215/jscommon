@@ -2,7 +2,7 @@ import dateFormat from 'date-format';
 import lodash from 'lodash';
 
 const DEFAULT_OPTIONS = {
-  format: 'YYYY-MM-DD HH:mm:ss.SSS'
+  format: 'yyyy-MM-dd hh:mm:ss.SSS'
 };
 
 /**
