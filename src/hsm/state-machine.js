@@ -3,8 +3,8 @@ import { EventEmitter } from '../events';
 
 class StateMachine extends EventEmitter {
   /**
-   * @param {import('xstate').MachineConfig} config
-   * @param {import('xstate').MachineSchema} options
+   * @param {import('xstate').DefaultContext} config
+   * @param {import('xstate').ServiceMap} [options]
    */
   constructor(config, options) {
     super();

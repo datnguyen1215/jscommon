@@ -1,4 +1,4 @@
-import StateMachine from '#src/hsm/state-machine';
+import StateMachine from '@/hsm/state-machine';
 import assert from 'assert';
 
 describe('hsm/state-machine.js', () => {
@@ -30,6 +30,7 @@ describe('hsm/state-machine.js', () => {
     machine.trigger('RUN');
     assert(machine.state.value === 'running');
     machine.trigger('STOP');
+    //@ts-ignore
     assert(machine.state.value === 'idle');
     machine.stop();
     done();
