@@ -3744,16 +3744,6 @@ const DisconnectReasons = {
   }
 };
 
-/**
- * @typedef {Object} MessagePayload
- * @property {string} type
- * @property {Object} data
- *
- * @typedef {Object} WebSocketMessage
- * @property {string} type
- * @property {string} [id]
- * @property {MessagePayload} payload
- */
 class WebSocketError extends Error {
   constructor(code, msg) {
     super(msg);
@@ -3776,7 +3766,7 @@ const ConnectionEvents = {
 };
 class Connection extends events.EventEmitter {
   /**
-   * @param {WebSocket} socket
+   * @param {WebSocketInterface} socket
    */
   constructor(socket) {
     super();
@@ -3793,22 +3783,23 @@ class Connection extends events.EventEmitter {
 
   /**
    * @private
-   * @param {WebSocketMessage} msg
+   * @param {string} msg
    */
   onMessage(msg) {
-    msg = JSON.parse(msg);
-    switch (msg.type) {
+    /** @type {WebSocketMessage} */
+    const data = JSON.parse(msg);
+    switch (data.type) {
       case MessageTypes.EVENT:
-        this.emit(ConnectionEvents.EVENT, msg.payload, this);
+        this.emit(ConnectionEvents.EVENT, data.payload, this);
         break;
       case MessageTypes.REQUEST:
-        this.onRequest(msg);
+        this.onRequest(data);
         break;
       case MessageTypes.RESPONSE:
-        this.emit(ConnectionEvents.RESPONSE, msg, this);
+        this.emit(ConnectionEvents.RESPONSE, data, this);
         break;
       default:
-        this.emit(ConnectionEvents.MESSAGE, msg, this);
+        this.emit(ConnectionEvents.MESSAGE, data, this);
         break;
     }
   }
@@ -3963,15 +3954,9 @@ class Connection extends events.EventEmitter {
   }
 }
 
-/**
- * @typedef {Object} WebSocketServerConfig
- * @property {number|string} port
- * @property {string} path
- * @property {http.Server} server
- */
 class Server extends events.EventEmitter {
   /**
-   * @param {WebSocketServerConfig} config
+   * @param {import('ws').ServerOptions} config
    */
   constructor(config) {
     super();
@@ -3980,13 +3965,13 @@ class Server extends events.EventEmitter {
     this.config = config;
 
     /**
-     * @type {ws.Server}
+     * @type {import('ws').Server}
      * @private
      **/
     this.wss = null;
 
     /**
-     * @type {Connection}
+     * @type {Connection[]}
      * @private
      **/
     this.clients = [];
@@ -4006,7 +3991,7 @@ class Server extends events.EventEmitter {
   /**
    * Broadcast a request to all connected clients.
    * @param {any} msg
-   * @returns {Promise}
+   * @returns {Promise<any[]>}
    */
   broadcastRequest(msg) {
     return Promise.all(this.clients.map(client => client.sendRequest(msg)));
@@ -4014,7 +3999,7 @@ class Server extends events.EventEmitter {
 
   /**
    * Start listening to websocket connections.
-   * @returns {Promise}
+   * @returns {void}
    */
   listen() {
     this.wss = new WebSocketServer$1(this.config);
@@ -4039,7 +4024,7 @@ class Server extends events.EventEmitter {
    * @returns {Promise}
    */
   async dispose() {
-    await this.wss.close();
+    this.wss.close();
     this.disposers.forEach(dispose => dispose());
     this.clients.forEach(client => client.close());
     this.wss = null;

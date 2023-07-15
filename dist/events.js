@@ -23,6 +23,7 @@ class EventEmitter {
    * Emit an event.
    * @param {string} type
    * @param {any} args
+   * @return {void}
    */
   emit(type, ...args) {
     if (!this.events[type]) return;
@@ -33,6 +34,7 @@ class EventEmitter {
    * Remove an event listener.
    * @param {string} type
    * @param {Function} listener
+   * @return {void}
    */
   off(type, listener) {
     if (!this.events[type]) return;
@@ -43,6 +45,7 @@ class EventEmitter {
    * Subscribe to an event once.
    * @param {string} type
    * @param {Function} listener
+   * @return {void}
    */
   once(type, listener) {
     const onceListener = (...args) => {
@@ -55,6 +58,7 @@ class EventEmitter {
   /**
    * Remove all listeners for an event.
    * @param {string} type
+   * @return {void}
    */
   removeAllListeners(type) {
     if (!this.events[type]) return;

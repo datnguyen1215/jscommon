@@ -3,46 +3,55 @@
 Object.defineProperty(exports, '__esModule', { value: true });
 
 var lodash = require('./lodash-848a4c1f.js');
+var assert = require('assert');
 require('./_commonjsHelpers-ed042b00.js');
 
-class Writable {
-  constructor(value) {
-    /** @private */
-    this.value = value;
-
-    /** @private */
-    this.listeners = [];
-  }
-  set(value) {
-    const old = this.value;
-    this.value = value;
-
-    // Notify all the listeners of new changes.
-    this.listeners.forEach(listener => listener(value, old));
-  }
+/**
+ * @param {any} value
+ * @returns {Writable}
+ */
+const writable = value => {
+  let listeners = [];
 
   /**
-   * Update the value by merging.
-   * @param {any} value
-   */
-  update(value) {
-    const newVal = lodash.lodash.merge({}, this.value, value);
-    this.set(newVal);
-  }
+   * Set current value to new value.
+   * @param {any} newValue
+   * @returns {void}
+   **/
+  const set = newValue => {
+    const old = value;
+    value = newValue;
+    listeners.forEach(listener => listener(value, old));
+  };
+
+  /**
+   * Update current value (object) with new value (object) using lodash.merge().
+   * @param {any} newValue
+   * @returns {void}
+   **/
+  const update = newValue => {
+    newValue = lodash.lodash.merge({}, value, newValue);
+    set(newValue);
+  };
 
   /**
    * Subscribe to changes.
-   * @param {function} listener
-   * @returns {function} destroy
+   * @param {function(any): void} listener
+   * @returns {function(): void} destroy
    */
-  subscribe(listener) {
-    this.listeners.push(listener);
-
-    // Make sure to call back immediately with the current value.
-    listener(this.value);
-    return () => this.listeners = this.listeners.filter(l => l !== listener);
-  }
-}
-const writable = value => new Writable(value);
+  const subscribe = listener => {
+    assert(typeof listener === 'function', 'listener must be a function');
+    listeners.push(listener);
+    listener(value);
+    return () => {
+      listeners = listeners.filter(l => l !== listener);
+    };
+  };
+  return {
+    set,
+    update,
+    subscribe
+  };
+};
 
 exports.default = writable;

@@ -4459,8 +4459,8 @@ function createMachine(config, options) {
 
 class StateMachine extends events.EventEmitter {
   /**
-   * @param {import('xstate').MachineConfig} config
-   * @param {import('xstate').MachineSchema} options
+   * @param {import('xstate').DefaultContext} config
+   * @param {import('xstate').ServiceMap} [options]
    */
   constructor(config, options) {
     super();
@@ -4509,7 +4509,17 @@ class StateMachine extends events.EventEmitter {
   }
 }
 
+/**
+ * Assigns context to the machine.
+ * @param {object} context - The context to assign to the machine.
+ * @returns {function(import('xstate').DefaultContext, import('xstate').EventData): void} - The function to assign the context to the machine.
+ */
 const assign = context => {
+  /**
+   * @param {import('xstate').DefaultContext} ctx - The current state of the machine.
+   * @param {import("xstate").EventData} evt - The event that was sent to the machine.
+   * @returns {void}
+   */
   return (ctx, evt) => {
     Object.keys(context).forEach(key => {
       const action = context[key];
