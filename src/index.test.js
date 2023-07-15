@@ -1,4 +1,4 @@
-import index, { utils, hsm, websocket, events } from '.';
+import index, { utils, hsm, websocket, events } from './index';
 import assert from 'assert';
 
 describe('index.js', () => {
