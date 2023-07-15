@@ -3,7 +3,7 @@ import assert from 'assert';
 
 /**
  * @param {any} value
- * @returns {import('@/types').Writable)}
+ * @returns {Writable}
  */
 const writable = value => {
   let listeners = [];

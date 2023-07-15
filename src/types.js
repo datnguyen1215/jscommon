@@ -1,6 +1,6 @@
 /**
  * @typedef {Object} Writable
- * @property {function(any): Writable} set
- * @property {function(): any} update
- * @property {function(): any} subscribe
+ * @property {function(any): void} set
+ * @property {function(any): void} update
+ * @property {function(function(any): void): any} subscribe
  */
