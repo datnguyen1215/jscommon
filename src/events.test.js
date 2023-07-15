@@ -1,11 +1,12 @@
-import { EventEmitter } from '#src/events';
-import events from '#src/events';
+import events, { EventEmitter, create } from '@/events';
 import assert from 'assert';
 
 describe('events', () => {
   it('should work with import default and named import', done => {
     assert(events.create);
+    assert(create);
     assert(events.EventEmitter === EventEmitter);
+    assert(EventEmitter);
     done();
   });
 
