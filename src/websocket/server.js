@@ -1,16 +1,10 @@
-/**
- * @typedef {Object} WebSocketServerConfig
- * @property {number|string} port
- * @property {string} path
- * @property {http.Server} server
- */
 import { EventEmitter } from '../events';
 import { WebSocketServer } from 'ws';
 import { Connection, ConnectionEvents } from './connection';
 
 class Server extends EventEmitter {
   /**
-   * @param {WebSocketServerConfig} config
+   * @param {import('ws').ServerOptions} config
    */
   constructor(config) {
     super();
@@ -19,13 +13,13 @@ class Server extends EventEmitter {
     this.config = config;
 
     /**
-     * @type {ws.Server}
+     * @type {import('ws').Server}
      * @private
      **/
     this.wss = null;
 
     /**
-     * @type {Connection}
+     * @type {Connection[]}
      * @private
      **/
     this.clients = [];
@@ -45,7 +39,7 @@ class Server extends EventEmitter {
   /**
    * Broadcast a request to all connected clients.
    * @param {any} msg
-   * @returns {Promise}
+   * @returns {Promise<any[]>}
    */
   broadcastRequest(msg) {
     return Promise.all(this.clients.map(client => client.sendRequest(msg)));
@@ -53,7 +47,7 @@ class Server extends EventEmitter {
 
   /**
    * Start listening to websocket connections.
-   * @returns {Promise}
+   * @returns {void}
    */
   listen() {
     this.wss = new WebSocketServer(this.config);
@@ -83,7 +77,7 @@ class Server extends EventEmitter {
    * @returns {Promise}
    */
   async dispose() {
-    await this.wss.close();
+    this.wss.close();
     this.disposers.forEach(dispose => dispose());
     this.clients.forEach(client => client.close());
     this.wss = null;
@@ -92,4 +86,4 @@ class Server extends EventEmitter {
   }
 }
 
-export { Server as default };
+export default Server;

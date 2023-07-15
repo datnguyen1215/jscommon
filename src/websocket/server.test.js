@@ -1,6 +1,6 @@
 import { WebSocket } from 'ws';
 import http from 'http';
-import WebSocketServer from '#src/websocket/server';
+import WebSocketServer from '@/websocket/server';
 
 const createServer = config => {
   const httpServer = http.createServer();
