@@ -3,6 +3,9 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"]
-    }
+    },
+    "target": "es6",
+    "checkJs": true,
+    "implicitAny": true
   }
 }
