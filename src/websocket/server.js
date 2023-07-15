@@ -1,6 +1,6 @@
 import { EventEmitter } from '../events';
 import { WebSocketServer } from 'ws';
-import { Connection, ConnectionEvents } from './connection';
+import Connection, { ConnectionEvents } from './connection';
 
 class Server extends EventEmitter {
   /**

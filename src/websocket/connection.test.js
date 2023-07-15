@@ -1,10 +1,7 @@
 import { WebSocket } from 'ws';
 import http from 'http';
-import WebSocketServer from '#src/websocket/server';
-import {
-  Connection as WebSocketConnection,
-  ConnectionEvents
-} from '#src/websocket/connection';
+import WebSocketServer from '@/websocket/server';
+import WebSocketConnection, { ConnectionEvents } from '@/websocket/connection';
 import assert from 'assert';
 
 const PORT = 8837;
@@ -12,11 +9,7 @@ const PORT = 8837;
 const createSocket = () => {
   return new Promise((resolve, reject) => {
     const ws = new WebSocket(`ws://localhost:${PORT}/test`);
-
-    ws.onopen = () => {
-      resolve(new WebSocketConnection(ws));
-    };
-
+    ws.onopen = () => resolve(new WebSocketConnection(ws));
     ws.onerror = err => reject(err);
   });
 };

@@ -1,13 +1,3 @@
-/**
- * @typedef {Object} MessagePayload
- * @property {string} type
- * @property {Object} data
- *
- * @typedef {Object} WebSocketMessage
- * @property {string} type
- * @property {string} [id]
- * @property {MessagePayload} payload
- */
 import { EventEmitter } from '../events';
 import MessageTypes from './constants/message-types';
 import { v4 as uuid } from 'uuid';
@@ -39,7 +29,7 @@ const ConnectionEvents = {
 
 class Connection extends EventEmitter {
   /**
-   * @param {WebSocket} socket
+   * @param {WebSocketInterface} socket
    */
   constructor(socket) {
     super();
@@ -59,26 +49,27 @@ class Connection extends EventEmitter {
 
   /**
    * @private
-   * @param {WebSocketMessage} msg
+   * @param {string} msg
    */
   onMessage(msg) {
-    msg = JSON.parse(msg);
+    /** @type {WebSocketMessage} */
+    const data = JSON.parse(msg);
 
-    switch (msg.type) {
+    switch (data.type) {
       case MessageTypes.EVENT:
-        this.emit(ConnectionEvents.EVENT, msg.payload, this);
+        this.emit(ConnectionEvents.EVENT, data.payload, this);
         break;
 
       case MessageTypes.REQUEST:
-        this.onRequest(msg);
+        this.onRequest(data);
         break;
 
       case MessageTypes.RESPONSE:
-        this.emit(ConnectionEvents.RESPONSE, msg, this);
+        this.emit(ConnectionEvents.RESPONSE, data, this);
         break;
 
       default:
-        this.emit(ConnectionEvents.MESSAGE, msg, this);
+        this.emit(ConnectionEvents.MESSAGE, data, this);
         break;
     }
   }
@@ -231,5 +222,4 @@ class Connection extends EventEmitter {
   }
 }
 
-const index = { ConnectionEvents, Connection };
-export { ConnectionEvents, Connection, Connection as default };
+export { ConnectionEvents, Connection as default };
