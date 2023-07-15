@@ -6,11 +6,8 @@
   "scripts": {
     "build": "npm run clean && rollup -c --bundleConfigAsCjs",
     "clean": "rm -rf dist/",
-    "test": "mocha --require @babel/register",
-    "test:all": "mocha --require @babel/register \"tests/**/*.test.js\""
-  },
-  "imports": {
-    "#src/*": "./src/*.js"
+    "test": "mocha --require @babel/register --require src/alias.js --exit",
+    "test:all": "npm test \"tests/**/*.test.js\""
   },
   "exports": {
     ".": "./dist/index.js",
@@ -20,6 +17,7 @@
   "dependencies": {
     "date-format": "^4.0.14",
     "lodash": "^4.17.21",
+    "module-alias": "^2.2.3",
     "uuid": "^9.0.0",
     "ws": "^8.13.0",
     "xstate": "^4.37.2"
