@@ -1,12 +1,19 @@
-import writable from '#src/writable';
+import writable from '@/writable';
 import assert from 'assert';
 
 describe('writable', () => {
+  it('should expose writable()', () => {
+    assert(writable, 'writable is not defined');
+    assert(typeof writable === 'function', 'writable is not a function');
+  });
+
   it('should subscribe and received value back immediately', () => {
     const store = writable({ count: 0 });
     const destroy = store.subscribe(value => {
       assert(value.count === 0);
     });
+
+    assert(typeof destroy === 'function', 'destroy is not a function');
     destroy();
   });
 
