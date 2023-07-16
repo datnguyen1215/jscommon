@@ -1,3 +1,20 @@
+/**
+ * @typedef {Object} MessagePayload
+ * @property {string} type
+ * @property {Object} [data]
+ */
+
+/**
+ * @typedef {Object} WebSocketMessage
+ * @property {string} type
+ * @property {string} [id]
+ * @property {MessagePayload} [payload]
+ */
+
+/**
+ * @typedef {import('ws').WebSocket | WebSocket} WebSocketInterface
+ */
+
 import { EventEmitter } from '../events';
 import MessageTypes from './constants/message-types';
 import { v4 as uuid } from 'uuid';

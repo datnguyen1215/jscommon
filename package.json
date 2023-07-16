@@ -4,8 +4,7 @@
   "author": "Dat Nguyen",
   "description": "A simple library for common javascript functions",
   "scripts": {
-    "build": "npm run clean && rollup -c --bundleConfigAsCjs",
-    "tsc": "tsc",
+    "build": "npm run clean && rollup -c --bundleConfigAsCjs && tsc",
     "clean": "rm -rf dist/",
     "test": "mocha --require @babel/register --require src/alias.js --exit",
     "test:all": "npm test \"tests/**/*.test.js\""

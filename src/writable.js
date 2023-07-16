@@ -1,3 +1,10 @@
+/**
+ * @typedef {Object} Writable
+ * @property {function(any): void} set
+ * @property {function(any): void} update
+ * @property {function(function(any): void): any} subscribe
+ */
+
 import lodash from 'lodash';
 import assert from 'assert';
 
@@ -35,7 +42,7 @@ const writable = value => {
    * @returns {function(): void} destroy
    */
   const subscribe = listener => {
-    assert(typeof listener === 'function', 'listener must be a function')
+    assert(typeof listener === 'function', 'listener must be a function');
 
     listeners.push(listener);
 
