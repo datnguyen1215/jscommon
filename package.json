@@ -5,6 +5,7 @@
   "description": "A simple library for common javascript functions",
   "scripts": {
     "build": "npm run clean && rollup -c --bundleConfigAsCjs",
+    "tsc": "tsc",
     "clean": "rm -rf dist/",
     "test": "mocha --require @babel/register --require src/alias.js --exit",
     "test:all": "npm test \"tests/**/*.test.js\""
@@ -13,6 +14,7 @@
     ".": "./dist/index.js",
     "./*": "./dist/*.js"
   },
+  "types": "./dist/types.js",
   "license": "ISC",
   "dependencies": {
     "date-format": "^4.0.14",
@@ -33,6 +35,7 @@
     "@rollup/plugin-node-resolve": "^15.1.0",
     "mocha": "^10.2.0",
     "rollup": "^3.25.1",
-    "rollup-plugin-copy": "^3.4.0"
+    "rollup-plugin-copy": "^3.4.0",
+    "typescript": "^5.1.6"
   }
 }
