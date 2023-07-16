@@ -14,7 +14,7 @@
     ".": "./dist/index.js",
     "./*": "./dist/*.js"
   },
-  "types": "./dist/types.js",
+  "types": "./dist/*.d.js",
   "license": "ISC",
   "dependencies": {
     "date-format": "^4.0.14",
