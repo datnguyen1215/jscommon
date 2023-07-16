@@ -3744,6 +3744,12 @@ const DisconnectReasons = {
   }
 };
 
+/**
+ * @typedef {Object} MessagePayload
+ * @property {string} type
+ * @property {Object} [data]
+ */
+
 class WebSocketError extends Error {
   constructor(code, msg) {
     super(msg);
